@@ -1,5 +1,7 @@
 body{
-    align-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border-style: solid;
     border-color: black;
     border: 15px;
@@ -8,31 +10,11 @@ body{
 #content{
     display:flex;
     flex-wrap: wrap;
-    flex-direction: column;
-    width: 60vw;
-    height: 100vh;
+    width: 35vw;
+    height: 80vh;
     border: 5px;
     border-style: solid;
     border-color: black;
 }
 
-#top-row{
-    display: flex;
-}
 
-#top-row button{
-    flex-grow: 1;
-}
-
-#numbers{
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1 1 1;
-    border-color: black;
-    border: 5px;
-    border-style: solid;
-}
-
-#numbers button{
-    flex-grow: 1;
-}
