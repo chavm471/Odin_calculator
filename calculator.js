@@ -4,7 +4,8 @@ const CONTAINER_HEIGHT = 80;
 const BUTTON_TOTAL = 19;
 const CALCULATOR_KEYS = ["C","+/-","%","/","7","8","9","x","4","5","6",
                             "-","1","2","3","+","0",".","="];
-const OPERATIONS = ["+/-","%","/","x","-","+","="];
+const OPERATIONS = ["/","x","-","+","="];
+const TOP_ROW = ["C","+/-","%"];
 
 
 //add two numbers
@@ -41,7 +42,20 @@ function updateDisplay(value){
 
 function clearDisplay(){
     //select the display id
-    const display = document.getElementById("display")
+    const calculator = document.getElementById("content");
+
+    //get the child nodes inside my container
+    const children = calculator.children;
+    
+    Array.from(children).forEach(node => {
+        //if the node is a operator
+        if(OPERATIONS.includes(node.textContent)){
+            node.style.backgroundColor = "orange";
+            node.style.color = "white";
+        }
+    });
+
+    //clear out the the display and display 0
     display.textContent = '0';
 }
 
@@ -73,6 +87,10 @@ function createCalculator(){
     //select the container element to be able to insert display before it
     //and be able to insert buttons later
     const container = document.querySelector("#content");
+    container.style.backgroundColor = "black";
+    container.style.justifyContent = "space-between";
+    container.style.alignItems = "center";
+    //container.style.alignContent = "space-between";
 
     body.insertBefore(display,container);
 
@@ -92,14 +110,23 @@ function createCalculator(){
         if(OPERATIONS.includes(CALCULATOR_KEYS[i])){
             button.style.backgroundColor = "orange";
         }
+        else if(TOP_ROW.includes(CALCULATOR_KEYS[i])){
+            button.style.backgroundColor = "gray";
+        }
         else{
-            button.style.backgroundColor = "black";
+            button.style.backgroundColor = "#2B2B2B";
         }
 
         button.style.color= "white";
         button.style.fontFamily = "Arial, Helvetica";
         button.style.fontSize = "24px";
         button.textContent = CALCULATOR_KEYS[i];
+
+        //after this the button has the key assigned to it
+        if(CALCULATOR_KEYS[i] === '0'){
+            button.style.flex ="2 1 auto";
+            button.style.borderRadius = "45px";
+        }
 
         container.appendChild(button);
         
@@ -111,16 +138,16 @@ function operate(firstNum,secondNum,operation){
     let result = 0;
 
     if(operation === "+"){
-        result = firstNum + secondNum;
+        result = add(firstNum,secondNum);
     }
-    if(operation === "-"){
-        result = firstNum - secondNum;
+    else if(operation === "-"){
+        result = subtract(firstNum,secondNum);
     }
-    if(operation === "*"){
-        result = firstNum * secondNum;
+    else if(operation === "x"){
+        result = multiply(firstNum,secondNum);
     }
-    if(operation === "/"){
-        result = firstNum / secondNum;
+    else if(operation === "/"){
+        result = divide(firstNum,secondNum);
     }
 
     return result;
@@ -136,27 +163,35 @@ function main(){
 
     const buttons = document.querySelectorAll("button");
 
+    //select all button to listen for if they are clicked
     buttons.forEach((button) => {
         button.addEventListener("click", () => {
             temp= button.textContent;
 
-            //if button is number
+            //if button is number and handles decimal too
             if(!isNaN(temp) || temp === "."){
                 //check if the operator flags has been set off
                 if(operatorClicked){
                     clearDisplay();
+                    //reset the operator clicked flag
                     operatorClicked = false;
                 }
+                //updates the display
                 updateDisplay(temp);
             }
 
-            //if user selects operations
+            //if user selects operations get ready to read in second number
             if(OPERATIONS.includes(temp)){
                 if(temp !== '='){
                     //if any operator is clicked then flag is set
                     operatorClicked = true;
                     firstNum = parseFloat(document.getElementById("display").textContent);
                     operation = temp;
+                    if(operation === '+/-'){
+                        firstNum = firstNum * -1;
+                        clearDisplay();
+                        updateDisplay(firstNum.toString());
+                    }
                     //highlight the operator button
                     button.style.backgroundColor = "white";
                     button.style.color = "orange";
