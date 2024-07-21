@@ -21,8 +21,10 @@ function multiply(num1,num2){
     return num1 * num2;
 }
 
-function divide(){
-    return num1/num2;
+function divide(num1,num2){
+    let temp = num1/num2;
+    let result = temp.toFixed(2);
+    return result;
 }
 
 //this functions handles the display of the calculator
@@ -147,6 +149,13 @@ function operate(firstNum,secondNum,operation){
         result = multiply(firstNum,secondNum);
     }
     else if(operation === "/"){
+        //check if either is number is 0
+        if (firstNum === 0 || secondNum === 0){
+            //send an error and clear the display
+            alert('sorry this is invalid input.');
+            clearDisplay();
+            return 0;
+        }
         result = divide(firstNum,secondNum);
     }
 
@@ -166,12 +175,14 @@ function main(){
     //select all button to listen for if they are clicked
     buttons.forEach((button) => {
         button.addEventListener("click", () => {
+            //get the user input and determine what it is.
             temp= button.textContent;
 
             //if button is number and handles decimal too
             if(!isNaN(temp) || temp === "."){
                 //check if the operator flags has been set off
                 if(operatorClicked){
+                    //if it has it clears the display to get the next number
                     clearDisplay();
                     //reset the operator clicked flag
                     operatorClicked = false;
