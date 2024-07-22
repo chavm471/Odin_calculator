@@ -207,6 +207,8 @@ function main(){
                     button.style.backgroundColor = "white";
                     button.style.color = "orange";
                 }
+                //if the user has pressed = then you get the result by calling appropiate 
+                //functions.
                 else{
                     secNum = parseFloat(document.getElementById("display").textContent);
                     let result = operate(firstNum,secNum,operation);
@@ -214,7 +216,8 @@ function main(){
                     firstNum = result;
                 }
             }
-
+            
+            //when user clicks on the clear button it clears the display 
             if(temp ==="C")
             {
                 clearDisplay();
