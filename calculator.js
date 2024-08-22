@@ -42,6 +42,8 @@ function updateDisplay(value){
     }
 }
 
+//this function clear the calculator buttons back the original colors,
+//and resets the number display back to 0
 function clearDisplay(){
     //select the display id
     const calculator = document.getElementById("content");
@@ -180,7 +182,7 @@ function main(){
 
             //if button is number and handles decimal too
             if(!isNaN(temp) || temp === "."){
-                //check if the operator flags has been set off
+                //check if the operator flags has been set off, if it has were going to
                 if(operatorClicked){
                     //if it has it clears the display to get the next number
                     clearDisplay();
@@ -191,22 +193,57 @@ function main(){
                 updateDisplay(temp);
             }
 
+            //special handle the negative sign 
+            //Handle +/- operation immediately
+            if(temp === "+/-"){
+                let currentValue = parseFloat(document.getElementById("display").textContent);
+                //make sure there a number besides zero to make negative
+                if(currentValue){
+                    currentValue = -Math.abs(currentValue); 
+                    //currentValue = -currentValue;
+                    document.getElementById("display").textContent = currentValue.toString();
+                    //updateDisplay(currentValue.toString());
+                }
+                return;
+            }
+
+            //special handle the percent sign
+            if(temp ==="%"){
+                let currentValue = parseFloat(document.getElementById("display").textContent);
+                //make sure there a number besides zero to make negative
+                if(currentValue){
+                    currentValue = currentValue / 100;
+                    //currentValue = -currentValue;
+                    document.getElementById("display").textContent = currentValue.toString();
+                    //updateDisplay(currentValue.toString());
+                }
+            }
+
             //if user selects operations get ready to read in second number
             if(OPERATIONS.includes(temp)){
                 if(temp !== '='){
                     //if any operator is clicked then flag is set
                     operatorClicked = true;
-                    firstNum = parseFloat(document.getElementById("display").textContent);
-                    operation = temp;
-                    if(operation === '+/-'){
-                        firstNum = firstNum * -1;
-                        clearDisplay();
-                        updateDisplay(firstNum.toString());
+
+                    //store the first number
+                    if(!firstNum) // check that its an empty string
+                    {
+                        firstNum = parseFloat(document.getElementById("display").textContent);
                     }
-                    //highlight the operator button
+                    else{
+                        //there is already a number defined
+                        secNum = parseFloat(document.getElementById("display").textContent);
+                        firstNum = operate(firstNum,secNum,operation);
+                        document.getElementById("display").textContent = firstNum;
+                    }
+                    //set the operation to the selected operator
+                    operation = temp;
+
+                    // Highlight the operator button
                     button.style.backgroundColor = "white";
                     button.style.color = "orange";
                 }
+
                 //if the user has pressed = then you get the result by calling appropiate 
                 //functions.
                 else{
@@ -214,6 +251,7 @@ function main(){
                     let result = operate(firstNum,secNum,operation);
                     document.getElementById("display").textContent = result;
                     firstNum = result;
+                    operation = '';
                 }
             }
             
